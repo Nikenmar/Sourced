@@ -8,7 +8,7 @@
 
 <p align="center">
 
-Half-Life and Quake movement for Minecraft 1.21.1 on NeoForge.
+Reimplementation of Half-Life and Quake movement for Minecraft 1.21.1 on NeoForge.
 
 </p>
 
