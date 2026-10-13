@@ -20,7 +20,6 @@ Requires [Kotlin for Forge](https://modrinth.com/mod/kotlin-for-forge) and depen
 - in-game config
 - adjustable values
 - keybinds to toggle the mod and cycle presets
-- English, Russian and Ukrainian
 
 ### Credits
 
@@ -43,3 +42,4 @@ Copyright (c) 2026 nikenmar.
 > *Sourced is an unofficial project, not affiliated with, endorsed by, or associated with Valve Corporation or id Software. "Half-Life", "Source" and "Valve" are trademarks of Valve Corporation. "Quake" and "id Software" are trademarks of id Software LLC.*
 
 </details>
+
