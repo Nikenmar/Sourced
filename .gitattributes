@@ -1,0 +1,13 @@
+# Normalise to LF in the repository, check out whatever the platform wants.
+* text=auto
+
+# These are read by a shell, so they stay LF even on Windows.
+gradlew     text eol=lf
+*.sh        text eol=lf
+
+# Batch files break if they are not CRLF.
+*.bat       text eol=crlf
+
+# Never touched by the newline filter.
+*.png       binary
+*.jar       binary

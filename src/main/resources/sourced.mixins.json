@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "cmrstudio.sourced.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MixinEntity",
+    "MixinLivingEntity",
+    "MixinPlayer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,54 @@
+# Kotlin For Forge supplies the language loader, the Kotlin stdlib, kotlin-reflect,
+# kotlinx-coroutines and kotlinx-serialization at runtime.
+modLoader = "kotlinforforge"
+loaderVersion = "${loader_version_range}"
+license = "MIT"
+
+[[mods]]
+modId = "sourced"
+version = "${version}"
+displayName = "Sourced"
+authors = "nikenmar"
+credits = "Based on re:squake, itself a rewrite of Squake"
+logoFile = "assets/sourced/icon.png"
+description = '''
+Half-Life and Quake style movement in Minecraft. Four presets: HL1 Movement, Half-Life,
+Half-Life 2 with accelerated back hopping, and Quake. Each is modelled on how those games move
+and adapted to Minecraft's tick rate and block grid. Bunnyhopping, trimping and sharking all
+work, and every value is adjustable in game.
+
+Sourced is an unofficial project, not affiliated with, endorsed by, or associated with Valve
+Corporation or id Software. "Half-Life", "Source" and "Valve" are trademarks of Valve Corporation.
+"Quake" and "id Software" are trademarks of id Software LLC.
+'''
+
+[[mixins]]
+config = "sourced.mixins.json"
+
+[[dependencies.sourced]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.sourced]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.sourced]]
+modId = "kotlinforforge"
+type = "required"
+versionRange = "${kff_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.sourced]]
+modId = "yet_another_config_lib_v3"
+type = "required"
+versionRange = "${yacl_version_range}"
+ordering = "NONE"
+side = "CLIENT"

@@ -1,0 +1,117 @@
+plugins {
+    id 'net.neoforged.moddev' version '2.0.144'
+    id 'org.jetbrains.kotlin.jvm' version "${kotlin_version}"
+    id 'org.jetbrains.kotlin.plugin.serialization' version "${kotlin_version}"
+    id 'maven-publish'
+}
+
+version = "${project.mod_version}+${project.minecraft_version}"
+group = project.maven_group
+
+base {
+    archivesName = "${project.archives_base_name}-neoforge"
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+
+kotlin {
+    jvmToolchain(21)
+}
+
+neoForge {
+    version = project.neoforge_version
+
+    parchment {
+        minecraftVersion = project.parchment_minecraft_version
+        mappingsVersion = project.parchment_mappings_version
+    }
+
+    runs {
+        client {
+            client()
+            gameDirectory = project.file('run')
+            systemProperty 'sourced.debug', 'true'
+        }
+        server {
+            server()
+            gameDirectory = project.file('run-server')
+            programArgument '--nogui'
+        }
+    }
+
+    mods {
+        sourced {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+repositories {
+    maven {
+        name = 'Kotlin for Forge'
+        url = 'https://thedarkcolour.github.io/KotlinForForge/'
+        content { includeGroup 'thedarkcolour' }
+    }
+    maven {
+        name = 'Xander'
+        url = 'https://maven.isxander.dev/releases'
+    }
+    mavenCentral()
+}
+
+dependencies {
+    // Kotlin stdlib, kotlin-reflect, kotlinx-coroutines and kotlinx-serialization are all
+    // provided at runtime by Kotlin For Forge — nothing Kotlin-related is shaded into our jar.
+    implementation "thedarkcolour:kotlinforforge-neoforge:${project.kff_version}"
+
+    // Config screen library. Client-only at runtime, but needed on the compile classpath.
+    implementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+}
+
+def expandProps = [
+        'version'                : project.version,
+        'minecraft_version'      : project.minecraft_version,
+        'minecraft_version_range': project.minecraft_version_range,
+        'neoforge_version'       : project.neoforge_version,
+        'neoforge_version_range' : project.neoforge_version_range,
+        'loader_version_range'   : project.loader_version_range,
+        'kff_version_range'      : project.kff_version_range,
+        'yacl_version_range'     : project.yacl_version_range,
+]
+
+tasks.named('processResources', ProcessResources).configure {
+    inputs.properties(expandProps)
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
+        expand expandProps
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release = 21
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+    }
+}
+
+jar {
+    from('LICENSE') {
+        rename { "${it}_${project.archives_base_name}" }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+    }
+}

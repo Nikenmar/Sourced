@@ -1,0 +1,9 @@
+{
+  "category.sourced": "Sourced",
+  "key.sourced.toggle": "Уключыць/выключыць Sourced",
+  "key.sourced.config": "Меню наладкі Sourced",
+  "sourced.enabled": "Sourced выключаны",
+  "sourced.disabled": "Sourced уключаны",
+  "key.sourced.cycle_mode": "Змяніць рэжым руху Sourced",
+  "sourced.mode": "Рух Sourced: %s"
+}
