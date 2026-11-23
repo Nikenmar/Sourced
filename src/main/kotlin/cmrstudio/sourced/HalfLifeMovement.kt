@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.PowderSnowBlock
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 import net.neoforged.neoforge.common.CommonHooks
+import kotlin.math.floor
 import kotlin.math.min
 import kotlin.math.sqrt
 
@@ -97,7 +98,8 @@ object HalfLifeMovement {
     if (player.isInFluidType) return false
     SourcedPlayer.swimming = false
 
-    val preset = cfg.preset(mode)
+    val commands = commandsThisTick(cfg.commandsPerTick(mode), player.tickCount)
+    val preset = cfg.preset(mode, commands)
     val rules = cfg.rules()
 
     // The speed walking converges on. By default it is Minecraft's: Player.aiStep has already
@@ -206,13 +208,13 @@ object HalfLifeMovement {
       val before = sqrt(velIn.x * velIn.x + velIn.z * velIn.z)
       val now = sqrt(after.x * after.x + after.z * after.z)
       SourcedMod.logger.info(
-        "t=%d ground=%b->%b jump=%b fired=%b spd=%.2f->%.2f m/s yawd=%.3f side=%.2f fwd=%.2f boost=%.1f ledge=%d gain=%.3f"
+        "t=%d ground=%b->%b jump=%b fired=%b spd=%.2f->%.2f m/s yawd=%.3f side=%.2f fwd=%.2f boost=%.1f ledge=%d gain=%.3f cmd=%d"
           .format(
             java.util.Locale.ROOT,
             debugTick++, groundIn, player.onGround(), jumpHeld, jumped,
             before * METERS_PER_UNIT, now * METERS_PER_UNIT,
             Mth.wrapDegrees(yawEnd - yawStart), movementInput.x, movementInput.z,
-            result.boost, world.ledgeHits, world.smallestGainFactor,
+            result.boost, world.ledgeHits, world.smallestGainFactor, commands,
           )
       )
     }
@@ -334,6 +336,19 @@ object HalfLifeMovement {
     }
 
     return Vec3(velocity.x, y, velocity.z)
+  }
+
+  /**
+   * Whole commands to run on tick [tick] when a preset asks for [perTick] of them, which may be
+   * fractional. Tick k runs floor((k + 1) * n) - floor(k * n), so any run of ticks averages
+   * exactly n: 10/3 gives 3, 3, 4, 3, 3, 4... A whole n gives n every tick. Keyed off the
+   * entity's own tick counter, so it holds no state and a mode switch cannot put it out of step.
+   * The core clamps whatever comes out of an odd setting to its own range.
+   */
+  internal fun commandsThisTick(perTick: Double, tick: Int): Int {
+    val k = tick.toDouble()
+    // A product that is a whole number in exact arithmetic can land a hair below it.
+    return (floor((k + 1.0) * perTick + 1e-9) - floor(k * perTick + 1e-9)).toInt()
   }
 
   /** Called when the mode changes so a stale "jump was held" does not block the first hop. */

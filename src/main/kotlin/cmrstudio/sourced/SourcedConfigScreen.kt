@@ -61,8 +61,14 @@ private fun doubleOption(key: String, default: Double, prop: KMutableProperty0<D
 private fun boolOption(key: String, default: Boolean, prop: KMutableProperty0<Boolean>) =
   boolOption(key, default, prop::get, prop::set)
 
-private fun intOption(key: String, default: Int, prop: KMutableProperty0<Int>) =
-  intOption(key, default, prop::get, prop::set)
+/** Commands per tick. A fraction is spread over ticks; the core runs 1 to 20 per tick. */
+private fun commandsOption(default: Double, prop: KMutableProperty0<Double>): Option<Double> =
+  Option.createBuilder<Double>()
+    .name(optName("commands_per_tick"))
+    .description(OptionDescription.of(optDesc("commands_per_tick")))
+    .binding(default, prop::get, prop::set)
+    .controller { opt -> DoubleFieldControllerBuilder.create(opt).range(1.0, 20.0) }
+    .build()
 
 /** The three preset groups are identical apart from which fields they edit. */
 private class PresetFields(
@@ -78,14 +84,14 @@ private class PresetFields(
   val idleFriction: KMutableProperty0<Double>,
   val maxVelocity: KMutableProperty0<Double>,
   val jumpHeight: KMutableProperty0<Double>,
-  val commandsPerTick: KMutableProperty0<Int>,
+  val commandsPerTick: KMutableProperty0<Double>,
   val hopClip: KMutableProperty0<Boolean>,
   val forwardBoost: KMutableProperty0<Boolean>,
   val additiveJump: KMutableProperty0<Boolean>,
   val softSpeedCap: KMutableProperty0<Boolean>,
 )
 
-private fun presetGroup(nameKey: String, d: Preset, f: PresetFields): OptionGroup = OptionGroup.createBuilder()
+private fun presetGroup(nameKey: String, d: Preset, commandsDefault: Double, f: PresetFields): OptionGroup = OptionGroup.createBuilder()
   .name(Component.translatable(nameKey))
   .collapsed(true)
   .option(doubleOption("gravity", d.gravity, f.gravity))
@@ -100,7 +106,7 @@ private fun presetGroup(nameKey: String, d: Preset, f: PresetFields): OptionGrou
   .option(doubleOption("idle_friction", d.idleFriction, f.idleFriction))
   .option(doubleOption("max_velocity", d.maxVelocity, f.maxVelocity))
   .option(doubleOption("jump_height", d.jumpHeight, f.jumpHeight))
-  .option(intOption("commands_per_tick", d.commandsPerTick, f.commandsPerTick))
+  .option(commandsOption(commandsDefault, f.commandsPerTick))
   .option(boolOption("hop_clip", d.hopClip, f.hopClip))
   .option(boolOption("forward_boost", d.forwardBoost, f.forwardBoost))
   .option(boolOption("additive_jump", d.additiveJump, f.additiveJump))
@@ -154,18 +160,18 @@ private fun halfLifeCategory(): ConfigCategory {
         SourcedConfig.DEFAULT_HL_STEP_HEIGHT, { SourcedMod.config.hlStepHeight }, { SourcedMod.config.hlStepHeight = it }))
       .build()
   )
-  .group(presetGroup("sourced.group.hl1", SourcedConfig.HL1_DEFAULTS, PresetFields(
+  .group(presetGroup("sourced.group.hl1", SourcedConfig.HL1_DEFAULTS, SourcedConfig.HL1_DEFAULTS.commandsPerTick.toDouble(), PresetFields(
     c::hl1Gravity, c::hl1FullSpeed, c::hl1InputScale, c::hl1GroundAcceleration, c::hl1AirAcceleration,
     c::hl1AirSpeedCap, c::hl1Friction, c::hl1EdgeFriction, c::hl1StopSpeed, c::hl1IdleFriction, c::hl1MaxVelocity,
     c::hl1JumpHeight, c::hl1CommandsPerTick, c::hl1HopClip, c::hl1ForwardBoost, c::hl1AdditiveJump, c::hl1SoftSpeedCap,
   )))
-  .group(presetGroup("sourced.group.hlmov", SourcedConfig.HLMOV_DEFAULTS, PresetFields(
+  .group(presetGroup("sourced.group.hlmov", SourcedConfig.HLMOV_DEFAULTS, SourcedConfig.DEFAULT_HLMOV_COMMANDS_PER_TICK, PresetFields(
     c::hlmovGravity, c::hlmovFullSpeed, c::hlmovInputScale, c::hlmovGroundAcceleration, c::hlmovAirAcceleration,
     c::hlmovAirSpeedCap, c::hlmovFriction, c::hlmovEdgeFriction, c::hlmovStopSpeed, c::hlmovIdleFriction,
     c::hlmovMaxVelocity, c::hlmovJumpHeight, c::hlmovCommandsPerTick, c::hlmovHopClip, c::hlmovForwardBoost,
     c::hlmovAdditiveJump, c::hlmovSoftSpeedCap,
   )))
-  .group(presetGroup("sourced.group.hl2", SourcedConfig.HL2_DEFAULTS, PresetFields(
+  .group(presetGroup("sourced.group.hl2", SourcedConfig.HL2_DEFAULTS, SourcedConfig.HL2_DEFAULTS.commandsPerTick.toDouble(), PresetFields(
     c::hl2Gravity, c::hl2FullSpeed, c::hl2InputScale, c::hl2GroundAcceleration, c::hl2AirAcceleration,
     c::hl2AirSpeedCap, c::hl2Friction, c::hl2EdgeFriction, c::hl2StopSpeed, c::hl2IdleFriction, c::hl2MaxVelocity,
     c::hl2JumpHeight, c::hl2CommandsPerTick, c::hl2HopClip, c::hl2ForwardBoost, c::hl2AdditiveJump, c::hl2SoftSpeedCap,

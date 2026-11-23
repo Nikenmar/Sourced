@@ -20,15 +20,15 @@ value is adjustable from a config screen and applies without a restart.
 
 | Preset                    | Modelled on                              | Commands per tick | Air budget | Distinguishing feature                                 |
 | ------------------------- | ---------------------------------------- | ----------------- | ---------- | ------------------------------------------------------ |
-| **HL1 Movement (Source)** | the HL1 Movement mod for Half-Life 2     | 3 (60 Hz)         | 90 u/s     | Default. Uncapped hop, no jump boost, no edge friction |
+| **HL1 Movement (Source)** | the HL1 Movement mod for Half-Life 2     | 3⅓ (66.7 Hz)      | 100 u/s    | Default. Uncapped hop, no jump boost, edge friction    |
 | Half-Life                 | Half-Life                                | 5 (100 Hz)        | 150 u/s    | Edge friction applies. Widest steering budget          |
 | Half-Life 2               | Half-Life 2, with the jump forward boost | 3 (60 Hz)         | 90 u/s     | Accelerated back hopping                               |
 | Quake                     | the Squake algorithm                     | 1                 | 39.4 u/s   | Soft and hard caps                                     |
 
 
 The games these presets follow update movement 60 to 100 times a second, not once per 20 Hz tick.
-Each preset emulates that with a fixed command count per tick, so steering does not follow frame
-rate.
+Each preset emulates that with a fixed command rate (HL1 Movement runs 10 commands every 3 ticks),
+so steering does not follow frame rate.
 
 The three Half-Life presets share vanilla gravity and a jump solved for a 1.25 block apex. They
 differ horizontally, not vertically.
@@ -107,8 +107,8 @@ Sourced is a rebranded fork of re:squake, itself a rewrite of Squake.
 - [He11crow](https://github.com/He11crow) for [porting](https://github.com/He11crow/SquakeFabric) the original to Fabric [(Modrinth)](https://modrinth.com/mod/squakefabric)
 - [squeek502](https://github.com/squeek502) for the [original Squake](https://github.com/squeek502/Squake) [(CurseForge)](https://www.curseforge.com/minecraft/mc-mods/squake)
 
-The default values of the HL1 Movement preset follow the console-variable defaults of the
-"HL1 Movement" build of the ghosting-renewed project.
+The default values of the HL1 Movement preset follow the fixed Half-Life rule set (`-truehl1`) of
+the "HL1 Movement" build of the ghosting-renewed project.
 
 ## License
 

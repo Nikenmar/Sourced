@@ -87,7 +87,7 @@ class SourcedConfig(@Transient var path: Path? = null) {
   var hl1IdleFriction        : Double  = HL1_DEFAULTS.idleFriction
   var hl1MaxVelocity         : Double  = HL1_DEFAULTS.maxVelocity
   var hl1JumpHeight          : Double  = HL1_DEFAULTS.jumpHeight
-  var hl1CommandsPerTick     : Int     = HL1_DEFAULTS.commandsPerTick
+  var hl1CommandsPerTick     : Double  = HL1_DEFAULTS.commandsPerTick.toDouble()
   var hl1HopClip             : Boolean = HL1_DEFAULTS.hopClip
   var hl1ForwardBoost        : Boolean = HL1_DEFAULTS.forwardBoost
   var hl1AdditiveJump        : Boolean = HL1_DEFAULTS.additiveJump
@@ -106,7 +106,7 @@ class SourcedConfig(@Transient var path: Path? = null) {
   var hlmovIdleFriction      : Double  = HLMOV_DEFAULTS.idleFriction
   var hlmovMaxVelocity       : Double  = HLMOV_DEFAULTS.maxVelocity
   var hlmovJumpHeight        : Double  = HLMOV_DEFAULTS.jumpHeight
-  var hlmovCommandsPerTick   : Int     = HLMOV_DEFAULTS.commandsPerTick
+  var hlmovCommandsPerTick   : Double  = DEFAULT_HLMOV_COMMANDS_PER_TICK
   var hlmovHopClip           : Boolean = HLMOV_DEFAULTS.hopClip
   var hlmovForwardBoost      : Boolean = HLMOV_DEFAULTS.forwardBoost
   var hlmovAdditiveJump      : Boolean = HLMOV_DEFAULTS.additiveJump
@@ -125,7 +125,7 @@ class SourcedConfig(@Transient var path: Path? = null) {
   var hl2IdleFriction        : Double  = HL2_DEFAULTS.idleFriction
   var hl2MaxVelocity         : Double  = HL2_DEFAULTS.maxVelocity
   var hl2JumpHeight          : Double  = HL2_DEFAULTS.jumpHeight
-  var hl2CommandsPerTick     : Int     = HL2_DEFAULTS.commandsPerTick
+  var hl2CommandsPerTick     : Double  = HL2_DEFAULTS.commandsPerTick.toDouble()
   var hl2HopClip             : Boolean = HL2_DEFAULTS.hopClip
   var hl2ForwardBoost        : Boolean = HL2_DEFAULTS.forwardBoost
   var hl2AdditiveJump        : Boolean = HL2_DEFAULTS.additiveJump
@@ -135,22 +135,35 @@ class SourcedConfig(@Transient var path: Path? = null) {
   /** The shared switches as the movement core takes them. Built fresh, so edits apply at once. */
   fun rules(): Rules = Rules(hlAutoHop, hlForwardBoostEnabled, hlBoostCeiling, hlSoftCapThreshold, hlSoftCapKeep)
 
-  /** One Half-Life preset as the movement core takes it. Built fresh, so edits apply at once. */
-  fun preset(mode: MovementMode): Preset = when (mode) {
+  /**
+   * Commands per tick of one Half-Life preset as configured. It may be fractional; the movement
+   * glue turns it into a whole count for each tick.
+   */
+  fun commandsPerTick(mode: MovementMode): Double = when (mode) {
+    MovementMode.HL2 -> hl2CommandsPerTick
+    MovementMode.HL1MOV -> hlmovCommandsPerTick
+    else -> hl1CommandsPerTick
+  }
+
+  /**
+   * One Half-Life preset as the movement core takes it, running [commands] commands this tick.
+   * Built fresh, so edits apply at once.
+   */
+  fun preset(mode: MovementMode, commands: Int): Preset = when (mode) {
     MovementMode.HL2 -> Preset(
       hl2Gravity, hl2FullSpeed, hl2InputScale, hl2GroundAcceleration, hl2AirAcceleration, hl2AirSpeedCap,
       hl2Friction, hl2EdgeFriction, hl2StopSpeed, hl2IdleFriction, hl2MaxVelocity, hl2JumpHeight,
-      hl2CommandsPerTick, hl2HopClip, hl2ForwardBoost, hl2AdditiveJump, hl2SoftSpeedCap,
+      commands, hl2HopClip, hl2ForwardBoost, hl2AdditiveJump, hl2SoftSpeedCap,
     )
     MovementMode.HL1MOV -> Preset(
       hlmovGravity, hlmovFullSpeed, hlmovInputScale, hlmovGroundAcceleration, hlmovAirAcceleration, hlmovAirSpeedCap,
       hlmovFriction, hlmovEdgeFriction, hlmovStopSpeed, hlmovIdleFriction, hlmovMaxVelocity, hlmovJumpHeight,
-      hlmovCommandsPerTick, hlmovHopClip, hlmovForwardBoost, hlmovAdditiveJump, hlmovSoftSpeedCap,
+      commands, hlmovHopClip, hlmovForwardBoost, hlmovAdditiveJump, hlmovSoftSpeedCap,
     )
     else -> Preset(
       hl1Gravity, hl1FullSpeed, hl1InputScale, hl1GroundAcceleration, hl1AirAcceleration, hl1AirSpeedCap,
       hl1Friction, hl1EdgeFriction, hl1StopSpeed, hl1IdleFriction, hl1MaxVelocity, hl1JumpHeight,
-      hl1CommandsPerTick, hl1HopClip, hl1ForwardBoost, hl1AdditiveJump, hl1SoftSpeedCap,
+      commands, hl1HopClip, hl1ForwardBoost, hl1AdditiveJump, hl1SoftSpeedCap,
     )
   }
 
@@ -162,9 +175,8 @@ class SourcedConfig(@Transient var path: Path? = null) {
     // @formatter:off
     /* General */
     // Movement
-    // HL1 Movement is the preset this mod is tuned around and the one to bunnyhop in: three
-    // commands per tick, and the widest per-tick air-steering budget of the four. The remaining
-    // presets are kept for comparison, not as the intended experience.
+    // HL1 Movement is the preset this mod is tuned around and the one to bunnyhop in. The
+    // remaining presets are kept for comparison, not as the intended experience.
             val DEFAULT_MOVEMENT_MODE               = MovementMode.HL1MOV
     const val DEFAULT_QUAKE_MOVEMENT_ENABLED        = true
     const val DEFAULT_TRIMPING_ENABLED              = true
@@ -206,6 +218,12 @@ class SourcedConfig(@Transient var path: Path? = null) {
     val HL2_DEFAULTS: Preset   = Preset.halfLife2()
     val HLMOV_DEFAULTS: Preset = Preset.hl1Movement()
     val RULES_DEFAULTS: Rules  = Rules.defaults()
+
+    // The core takes a whole number of commands per tick; the movement glue spreads a fractional
+    // count over consecutive ticks (HalfLifeMovement.commandsThisTick). HL1 Movement steps every
+    // 15 ms like the build it follows: 66.67 commands a second, 10 every 3 ticks, where a whole
+    // 3 per tick would run at 60.
+    const val DEFAULT_HLMOV_COMMANDS_PER_TICK = 10.0 / 3.0
 
     // Off. Minecraft terrain is a grid of cubes, and at high speed every block corner is a wall
     // that ends the run. This adds no speed; it stops block corners from taking away speed you

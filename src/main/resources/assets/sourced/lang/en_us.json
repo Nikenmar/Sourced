@@ -143,7 +143,7 @@
   "sourced.opt.jump_height": "Jump height",
   "sourced.opt.jump_height.desc": "Jump impulse in units. Higher values jump higher.",
   "sourced.opt.commands_per_tick": "Commands per tick",
-  "sourced.opt.commands_per_tick.desc": "How many movement steps run inside one tick. More steps make steering finer. The count is fixed and does not follow your frame rate.",
+  "sourced.opt.commands_per_tick.desc": "How many movement steps run inside one tick. More steps make steering finer. A fraction is spread over ticks: 3.333 runs 3, 3, 4 and so on, 66.7 steps a second. The count does not follow your frame rate.",
   "sourced.opt.hop_clip": "Hop clip",
   "sourced.opt.hop_clip.desc": "On each jump, crops speed above 1.7 times the preset's full speed.",
   "sourced.opt.forward_boost": "Jump forward boost",

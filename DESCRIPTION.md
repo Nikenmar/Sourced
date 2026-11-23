@@ -28,7 +28,7 @@ Requires [Kotlin for Forge](https://modrinth.com/mod/kotlin-for-forge) and depen
 - [He11crow](https://github.com/He11crow) for [porting](https://github.com/He11crow/SquakeFabric) the original to fabric [(Modrinth)](https://modrinth.com/mod/squakefabric)
 - [squeek502](https://github.com/squeek502) for the [original](https://github.com/squeek502/Squake) squake forge mod [(CurseForge)](https://www.curseforge.com/minecraft/mc-mods/squake)
 
-The default values of the HL1 Movement preset follow the console-variable defaults of the "HL1 Movement" build of the ghosting-renewed project.
+The default values of the HL1 Movement preset follow the fixed Half-Life rule set (`-truehl1`) of the "HL1 Movement" build of the ghosting-renewed project.
 
 ---
 
