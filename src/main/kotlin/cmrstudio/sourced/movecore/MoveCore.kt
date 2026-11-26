@@ -103,7 +103,7 @@ class Preset(
       idleFriction = 10.96,
       maxVelocity = 3500.0,
       jumpHeight = 58.7,
-      commandsPerTick = 3,
+      commandsPerTick = 5,
       hopClip = false,
       forwardBoost = false,
       additiveJump = false,

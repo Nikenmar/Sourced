@@ -165,7 +165,7 @@ private fun halfLifeCategory(): ConfigCategory {
     c::hl1AirSpeedCap, c::hl1Friction, c::hl1EdgeFriction, c::hl1StopSpeed, c::hl1IdleFriction, c::hl1MaxVelocity,
     c::hl1JumpHeight, c::hl1CommandsPerTick, c::hl1HopClip, c::hl1ForwardBoost, c::hl1AdditiveJump, c::hl1SoftSpeedCap,
   )))
-  .group(presetGroup("sourced.group.hlmov", SourcedConfig.HLMOV_DEFAULTS, SourcedConfig.DEFAULT_HLMOV_COMMANDS_PER_TICK, PresetFields(
+  .group(presetGroup("sourced.group.hlmov", SourcedConfig.HLMOV_DEFAULTS, SourcedConfig.HLMOV_DEFAULTS.commandsPerTick.toDouble(), PresetFields(
     c::hlmovGravity, c::hlmovFullSpeed, c::hlmovInputScale, c::hlmovGroundAcceleration, c::hlmovAirAcceleration,
     c::hlmovAirSpeedCap, c::hlmovFriction, c::hlmovEdgeFriction, c::hlmovStopSpeed, c::hlmovIdleFriction,
     c::hlmovMaxVelocity, c::hlmovJumpHeight, c::hlmovCommandsPerTick, c::hlmovHopClip, c::hlmovForwardBoost,

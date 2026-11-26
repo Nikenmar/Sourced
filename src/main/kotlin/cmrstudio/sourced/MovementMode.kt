@@ -12,9 +12,9 @@ enum class MovementMode {
   @SerialName("hl2") HL2,
 
   /**
-   * The "HL1 Movement" preset: 66.67 commands a second (10 every 3 ticks), an uncapped hop and
-   * edge friction. Splitting ticks into commands at a fixed rate spreads the air steering in small
-   * steps while staying independent of frame rate.
+   * The "HL1 Movement" preset: five commands per tick (100 a second, 10 ms each), an uncapped hop
+   * and edge friction. Splitting ticks into commands at a fixed rate spreads the air steering in
+   * small steps while staying independent of frame rate.
    *
    * The default, and the one the mod is tuned around - see `DEFAULT_MOVEMENT_MODE`.
    */

@@ -106,7 +106,7 @@ class SourcedConfig(@Transient var path: Path? = null) {
   var hlmovIdleFriction      : Double  = HLMOV_DEFAULTS.idleFriction
   var hlmovMaxVelocity       : Double  = HLMOV_DEFAULTS.maxVelocity
   var hlmovJumpHeight        : Double  = HLMOV_DEFAULTS.jumpHeight
-  var hlmovCommandsPerTick   : Double  = DEFAULT_HLMOV_COMMANDS_PER_TICK
+  var hlmovCommandsPerTick   : Double  = HLMOV_DEFAULTS.commandsPerTick.toDouble()
   var hlmovHopClip           : Boolean = HLMOV_DEFAULTS.hopClip
   var hlmovForwardBoost      : Boolean = HLMOV_DEFAULTS.forwardBoost
   var hlmovAdditiveJump      : Boolean = HLMOV_DEFAULTS.additiveJump
@@ -218,12 +218,6 @@ class SourcedConfig(@Transient var path: Path? = null) {
     val HL2_DEFAULTS: Preset   = Preset.halfLife2()
     val HLMOV_DEFAULTS: Preset = Preset.hl1Movement()
     val RULES_DEFAULTS: Rules  = Rules.defaults()
-
-    // The core takes a whole number of commands per tick; the movement glue spreads a fractional
-    // count over consecutive ticks (HalfLifeMovement.commandsThisTick). HL1 Movement steps every
-    // 15 ms like the build it follows: 66.67 commands a second, 10 every 3 ticks, where a whole
-    // 3 per tick would run at 60.
-    const val DEFAULT_HLMOV_COMMANDS_PER_TICK = 10.0 / 3.0
 
     // Off. Minecraft terrain is a grid of cubes, and at high speed every block corner is a wall
     // that ends the run. This adds no speed; it stops block corners from taking away speed you
